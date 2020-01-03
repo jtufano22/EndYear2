@@ -57,7 +57,7 @@ public class GeometryDash extends Application {
 
         Scene scene = new Scene(pane, width, height);
         stage.setScene(scene);
-        stage.setTitle("Square Dude Dodging These Hoes");
+        stage.setTitle("Square Dude");
         stage.getIcons().add(new Image("squareDude.png"));
         stage.setResizable(false);
         stage.show();
