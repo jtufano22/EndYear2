@@ -23,6 +23,10 @@ public class Tetris extends Application {
         Button lvl2 = new Button("Level 2");
         Button lvl3 = new Button("Level 3");
 
+        newGame.setOnAction(e ->
+                );
+
+
         lvl1.setStyle("-fx-font-size: 2em; ");
         lvl2.setStyle("-fx-font-size: 2em; ");
         lvl3.setStyle("-fx-font-size: 2em; ");
@@ -30,18 +34,13 @@ public class Tetris extends Application {
         VBox rightButtons = new VBox(70);
         rightButtons.setAlignment(Pos.CENTER);
         rightButtons.getChildren().addAll(newGame, pause);
-        //RightButtonGrid.add(rightButtons, 0, 0);
         border.setRight(rightButtons);
-
 
 
         VBox leftButtons = new VBox(70);
         leftButtons.setAlignment(Pos.CENTER);
         leftButtons.getChildren().addAll(lvl1, lvl2,lvl3);
-        //RightButtonGrid.add(rightButtons, 0, 0);
         border.setLeft(leftButtons);
-
-
 
         border.setCenter(tetrisgrid);
 
