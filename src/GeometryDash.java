@@ -7,6 +7,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import javafx.stage.Stage;
@@ -39,7 +40,8 @@ public class GeometryDash extends Application {
     // all obstacles must be instantiated here
     private int obstaclesPast = 0;
     private ArrayList<Shape> obstacles = new ArrayList<>(100);
-    Rectangle o1 = new Rectangle(width, height -118, 25, 50);
+    private Rectangle o1 = new Rectangle(width, height -118, 25, 50);
+    private Polygon o2  = new Polygon(width + 125, height - 68, width + 151, height - 68, width + 138, height - 94);
 
     // particle effect behind player to show movement (optional)
     private ArrayList<Circle> fart = new ArrayList<>(50);
@@ -49,6 +51,7 @@ public class GeometryDash extends Application {
         pane.setStyle("-fx-background-color: linear-gradient(from 10% 10% to 100% 100%, #ff0000, #ffc400);");
 
         obstacles.add(o1);
+        obstacles.add(o2);
         for(Shape s : obstacles) {
             pane.getChildren().add(s);
         }
@@ -105,16 +108,16 @@ public class GeometryDash extends Application {
         stage.show();
     }
 
-    public void jump() {
-        if(up && startingPos-96 < dudeY) {
-            dudeY-=4;
+    private void jump() {
+        if(up && startingPos-100 < dudeY) {
+            dudeY-=5;
         }
-        else if(startingPos-96 >= dudeY) {
+        else if(startingPos-100 >= dudeY) {
             up = false;
         }
 
         if(!up && height-100 > dudeY) {
-            dudeY+=4;
+            dudeY+=5;
         }
         else if (height-100 <= dudeY) {
             jump = false;
