@@ -1,5 +1,9 @@
 import javafx.animation.AnimationTimer;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -10,9 +14,14 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import javafx.util.Duration;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class GeometryDash extends Application {
     private ImageView dude = new ImageView("squareDude.png");
+
 
     private int height = 500;
     private int width = 750;
@@ -26,15 +35,23 @@ public class GeometryDash extends Application {
 
     private Rectangle ground = new Rectangle(0, height-68, width+28, 78);
 
+    Pane pane = new Pane();
+    Rectangle r1 = new Rectangle(0,400,30, 30);
+
+
+
+
 
     public void start(Stage stage) {
-        Pane pane = new Pane();
         pane.setStyle("-fx-background-color: radial-gradient(from 100% 100% to 100% 100%, #000000, #FFFFFF);");
 
         ground.setFill(Color.DARKBLUE);
 
+        newBlock();
         dude.relocate(dudeX, dudeY);
-        pane.getChildren().addAll(dude, ground);
+        pane.getChildren().addAll(dude, ground, r1);
+
+
 
         new AnimationTimer() {
             public void handle(long now){
@@ -52,6 +69,8 @@ public class GeometryDash extends Application {
                 }
                 dude.relocate(dudeX, dudeY);
                 pane.requestFocus();
+
+
             }
         }.start();
 
@@ -77,5 +96,19 @@ public class GeometryDash extends Application {
         else if (height-100 <= dudeY) {
             jump = false;
         }
+    }
+
+    public void newBlock() {
+
+        Timeline blockMovement = new Timeline(new KeyFrame(Duration.seconds(.01), new EventHandler<ActionEvent>() {
+
+            double i = 1000 ;
+            public void handle(ActionEvent event) {
+                r1.setX(i);
+                i--;
+            }
+        }));
+        blockMovement.setCycleCount(Timeline.INDEFINITE);
+        blockMovement.play();
     }
 }
