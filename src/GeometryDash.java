@@ -1,9 +1,13 @@
 import javafx.animation.AnimationTimer;
+import javafx.animation.Timeline;
 import javafx.application.Application;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
+
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -11,10 +15,13 @@ import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.util.ArrayList;
 
 public class GeometryDash extends Application {
+
+    private Button pause;
     // player
     private ImageView dude = new ImageView("squareDude.png");
 
@@ -23,11 +30,12 @@ public class GeometryDash extends Application {
     private int width = 750;
 
     // coordinates of player
-    private int dudeX = 64;
+    private int dudeX = 63;
     private int dudeY = height - 100;
 
-    // boundary for player
-    private Rectangle dudeBound = new Rectangle(dudeX, dudeY, 32, 32);
+    // boundary for player and obstacles
+    private Rectangle2D dudeBound = new Rectangle2D(dudeX, dudeY, 32, 32);
+    private Rectangle2D obsBound;
 
     // jumping stuff
     private boolean jump = false;
@@ -40,8 +48,7 @@ public class GeometryDash extends Application {
     // all obstacles must be instantiated here
     private int obstaclesPast = 0;
     private ArrayList<Shape> obstacles = new ArrayList<>(100);
-    private Rectangle o1 = new Rectangle(width, height -118, 25, 50);
-    private Polygon o2  = new Polygon(width + 125, height - 68, width + 151, height - 68, width + 138, height - 94);
+    private Rectangle o1 = new Rectangle(width, height -118, 100, 50);
 
     // particle effect behind player to show movement (optional)
     private ArrayList<Circle> fart = new ArrayList<>(50);
@@ -51,10 +58,10 @@ public class GeometryDash extends Application {
         pane.setStyle("-fx-background-color: linear-gradient(from 10% 10% to 100% 100%, #ff0000, #ffc400);");
 
         obstacles.add(o1);
-        obstacles.add(o2);
         for(Shape s : obstacles) {
             pane.getChildren().add(s);
         }
+
 
         ground.setFill(Color.MEDIUMPURPLE);
         dude.relocate(dudeX, dudeY);
@@ -74,31 +81,74 @@ public class GeometryDash extends Application {
                 });
 
                 if(jump) {
-                    jump();
+                    if (up) {
+                        jump();
+                    } else {
+                        fall();
+                    }
                 }
-                dude.relocate(dudeX, dudeY);
-
+                boolean supported = false;
 
                 // everything to do with obstacles goes here
                 for(int i = obstaclesPast; i < obstacles.size(); i++) {
                     Shape s = obstacles.get(i);
-                    if (dudeBound.intersects(s.getLayoutBounds())) {
-                        // game end
+                    if(s instanceof Rectangle) {
+                        obsBound = new Rectangle2D(s.getLayoutX() + width,
+                                ((Rectangle) s).getY(),
+                                s.getLayoutBounds().getWidth(),
+                                s.getLayoutBounds().getHeight());
+                    }
+                    else if(s instanceof Polygon) {
+
                         break;
                     }
-                    else if (s.getLayoutX() <= -775) {
+
+//                    System.out.println((dudeY + 32) + " = " + ((Rectangle) s).getY());
+//                    System.out.println("\n" + (750 + s.getLayoutX()) + " < " + (dudeX + 32) + "\n" +
+//                            (750 + s.getLayoutX() + ((Rectangle) s).getWidth()) + ">"  + (dudeX + 32));
+                    if(s instanceof Rectangle &&
+                            dudeY + 32 == ((Rectangle) s).getY() &&
+                            (width + s.getLayoutX()) < dudeX + 32 &&
+                            (width + s.getLayoutX() + ((Rectangle) s).getWidth()) > dudeX + 32 &&
+                            !up) {
+                        // stay on it
+                        dudeY = (int)(((Rectangle) s).getY()) - 32;
+                        jump = false;
+                        up = false;
+                        supported = true;
+                        System.out.println("stay up");
+                    }
+
+                    else if (hits(dudeBound, obsBound)) {
+                        // die
+                        stop();
+                     }
+                    else if (s.getLayoutX() + s.getLayoutBounds().getWidth() <= -750) {
                         pane.getChildren().remove(s);
                         obstaclesPast++;
                         obstacles.set(i, null);
                     }
-                    else {
-                        s.setLayoutX(s.getLayoutX() - 5);
-                    }
+
+
+                    s.setLayoutX(s.getLayoutX() - 5);
                 }
 
+                if (!supported && !jump && dudeY < height-100) {
+                    dudeY += 5;
+                }
+
+
+                dude.relocate(dudeX, dudeY);
                 pane.requestFocus();
             }
         }.start();
+
+//        pause.setOnAction(e -> {
+//
+//            if (stop();
+//        });
+
+
 
         Scene scene = new Scene(pane, width, height);
         stage.setScene(scene);
@@ -108,19 +158,28 @@ public class GeometryDash extends Application {
         stage.show();
     }
 
+    // jumping and falling
     private void jump() {
-        if(up && startingPos-100 < dudeY) {
+        if(startingPos-100 < dudeY) {
             dudeY-=5;
         }
-        else if(startingPos-100 >= dudeY) {
+        else{
             up = false;
         }
-
-        if(!up && height-100 > dudeY) {
+        dudeBound = new Rectangle2D(dudeX, dudeY, 32, 32);
+    }
+    private void fall() {
+        if(height-100 > dudeY) {
             dudeY+=5;
         }
-        else if (height-100 <= dudeY) {
+        else{
             jump = false;
         }
+        dudeBound = new Rectangle2D(dudeX, dudeY, 32, 32);
+    }
+
+    // collision
+    private boolean hits(Rectangle2D o1, Rectangle2D o2) {
+        return (o1.getMaxX() == o2.getMinX()) && (o1.getMaxY() >= o2.getMinY());
     }
 }
