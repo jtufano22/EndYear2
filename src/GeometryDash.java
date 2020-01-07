@@ -3,6 +3,7 @@ import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -14,10 +15,13 @@ import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import javafx.stage.Stage;
-import java.time.Duration;
+import javafx.util.Duration;
+
 import java.util.ArrayList;
 
 public class GeometryDash extends Application {
+
+    private Button pause;
     // player
     private ImageView dude = new ImageView("squareDude.png");
 
@@ -58,6 +62,7 @@ public class GeometryDash extends Application {
             pane.getChildren().add(s);
         }
 
+
         ground.setFill(Color.MEDIUMPURPLE);
         dude.relocate(dudeX, dudeY);
         pane.getChildren().addAll(dude, ground);
@@ -82,6 +87,7 @@ public class GeometryDash extends Application {
                         fall();
                     }
                 }
+                boolean supported = false;
 
                 // everything to do with obstacles goes here
                 for(int i = obstaclesPast; i < obstacles.size(); i++) {
@@ -93,7 +99,7 @@ public class GeometryDash extends Application {
                                 s.getLayoutBounds().getHeight());
                     }
                     else if(s instanceof Polygon) {
-                        // bounds code for spikes
+
                         break;
                     }
 
@@ -109,24 +115,40 @@ public class GeometryDash extends Application {
                         dudeY = (int)(((Rectangle) s).getY()) - 32;
                         jump = false;
                         up = false;
+                        supported = true;
+                        System.out.println("stay up");
                     }
+
                     else if (hits(dudeBound, obsBound)) {
                         // die
                         stop();
-                    }
+                     }
                     else if (s.getLayoutX() + s.getLayoutBounds().getWidth() <= -750) {
                         pane.getChildren().remove(s);
                         obstaclesPast++;
                         obstacles.set(i, null);
                     }
 
+
                     s.setLayoutX(s.getLayoutX() - 5);
                 }
+
+                if (!supported && !jump && dudeY < height-100) {
+                    dudeY += 5;
+                }
+
 
                 dude.relocate(dudeX, dudeY);
                 pane.requestFocus();
             }
         }.start();
+
+//        pause.setOnAction(e -> {
+//
+//            if (stop();
+//        });
+
+
 
         Scene scene = new Scene(pane, width, height);
         stage.setScene(scene);
