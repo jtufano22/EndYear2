@@ -48,7 +48,7 @@ public class GeometryDash extends Application {
     // all obstacles must be instantiated here
     private int obstaclesPast = 0;
     private ArrayList<Shape> obstacles = new ArrayList<>(100);
-    private Block o1 = new Block(width, height -118, 100, 50);
+    private Rectangle o1 = new Rectangle(width, height -118, 100, 50);
 
     // particle effect behind player to show movement (optional)
     private ArrayList<Circle> fart = new ArrayList<>(50);
@@ -92,47 +92,49 @@ public class GeometryDash extends Application {
                 // everything to do with obstacles goes here
                 for(int i = obstaclesPast; i < obstacles.size(); i++) {
                     Shape s = obstacles.get(i);
-                    if(s instanceof Block) {
-                        obsBound = ((Block) s).getBounds();
+                    if(s instanceof Rectangle) {
+                        obsBound = new Rectangle2D(s.getLayoutX() + width,
+                                ((Rectangle) s).getY(),
+                                s.getLayoutBounds().getWidth(),
+                                s.getLayoutBounds().getHeight());
                     }
-                    else if(s instanceof Spike) {
-                        obsBound = ((Spike) s).getBounds();
+                    else if(s instanceof Polygon) {
+
                         break;
                     }
 
-                    System.out.println(((Block)s).getBounds());
-                    if(s instanceof Block &&
-                            dudeY + 32 == ((Block) s).getY() &&
-                            ((Block)s).getX() < dudeX + 32 &&
-                            ((Block)s).getX() + ((Block) s).getWidth() > dudeX + 32 &&
+//                    System.out.println((dudeY + 32) + " = " + ((Rectangle) s).getY());
+//                    System.out.println("\n" + (750 + s.getLayoutX()) + " < " + (dudeX + 32) + "\n" +
+//                            (750 + s.getLayoutX() + ((Rectangle) s).getWidth()) + ">"  + (dudeX + 32));
+                    if(s instanceof Rectangle &&
+                            dudeY + 32 == ((Rectangle) s).getY() &&
+                            (width + s.getLayoutX()) < dudeX + 32 &&
+                            (width + s.getLayoutX() + ((Rectangle) s).getWidth()) > dudeX + 32 &&
                             !up) {
                         // stay on it
-                        dudeY = (int)(((Block) s).getY()) - 32;
+                        dudeY = (int)(((Rectangle) s).getY()) - 32;
                         jump = false;
                         up = false;
                         supported = true;
+                        System.out.println("stay up");
                     }
 
                     else if (hits(dudeBound, obsBound)) {
                         // die
                         stop();
-                     }
+                    }
                     else if (s.getLayoutX() + s.getLayoutBounds().getWidth() <= -750) {
                         pane.getChildren().remove(s);
                         obstaclesPast++;
                         obstacles.set(i, null);
                     }
 
-                    if(s instanceof Spike) {
-                        s.setLayoutX(s.getLayoutX() - 5);
-                    }
-                    else if(s instanceof Block) {
-                        ((Block)s).setX(((Block) s).getX()-5);
-                    }
+
+                    s.setLayoutX(s.getLayoutX() - 5);
                 }
 
-                if (!supported && !jump) {
-                    fall();
+                if (!supported && !jump && dudeY < height-100) {
+                    dudeY += 5;
                 }
 
 
