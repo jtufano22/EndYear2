@@ -49,6 +49,7 @@ public class GeometryDash extends Application {
     private int obstaclesPast = 0;
     private ArrayList<Shape> obstacles = new ArrayList<>(100);
     private Block o1 = new Block(width, height -118, 100, 50);
+    private Block o2 = new Block(width+500, height -118, 100, 50);
 
     // particle effect behind player to show movement (optional)
     private ArrayList<Circle> fart = new ArrayList<>(50);
@@ -57,15 +58,15 @@ public class GeometryDash extends Application {
         Pane pane = new Pane();
         pane.setStyle("-fx-background-color: linear-gradient(from 10% 10% to 100% 100%, #ff0000, #ffc400);");
 
-        obstacles.add(o1);
-        for(Shape s : obstacles) {
-            pane.getChildren().add(s);
-        }
-
-
         ground.setFill(Color.MEDIUMPURPLE);
         dude.relocate(dudeX, dudeY);
         pane.getChildren().addAll(dude, ground);
+
+        obstacles.add(o1);
+        obstacles.add(o2);
+        for(Shape s : obstacles) {
+            pane.getChildren().add(s);
+        }
 
         new AnimationTimer() {
             public void handle(long now){
