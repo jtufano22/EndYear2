@@ -50,9 +50,11 @@ public class GeometryDash extends Application {
     private ArrayList<Shape> obstacles = new ArrayList<>(100);
     private Block o1 = new Block(width, height -118, 100, 50);
     private Block o2 = new Block(width+500, height -118, 100, 50);
-
+    private Block o3 = new Block(width +250, height -150, 100, 50);
+    private Block o4 = new Block(width +250, height -118, 100, 50);
     // particle effect behind player to show movement (optional)
     private ArrayList<Circle> fart = new ArrayList<>(50);
+
 
     public void start(Stage stage) {
         Pane pane = new Pane();
@@ -64,6 +66,8 @@ public class GeometryDash extends Application {
 
         obstacles.add(o1);
         obstacles.add(o2);
+        obstacles.add(o3);
+        obstacles.add(o4);
         for(Shape s : obstacles) {
             pane.getChildren().add(s);
         }
@@ -101,9 +105,9 @@ public class GeometryDash extends Application {
                         break;
                     }
 
-                    System.out.println(((Block)s).getBounds());
+//                    System.out.println(((Block)s).getBounds());
                     if(s instanceof Block &&
-                            dudeY + 32 == ((Block) s).getY() &&
+                            dudeY + 32 > ((Block) s).getY() &&
                             ((Block)s).getX() < dudeX + 32 &&
                             ((Block)s).getX() + ((Block) s).getWidth() > dudeX + 32 &&
                             !up) {
