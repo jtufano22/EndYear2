@@ -55,6 +55,7 @@ public class GeometryDash extends Application {
     private Block o2 = new Block(width+500, height -118, 100, 50);
     private Block o3 = new Block(width +250, height -150, 100, 50);
     private Block o4 = new Block(width +250, height -118, 100, 50);
+    private Spike o5 = new Spike(width-50, height-68,  50, 50);
     // particle effect behind player to show movement (optional)
     private ArrayList<Circle> fart = new ArrayList<>(50);
 
@@ -63,7 +64,7 @@ public class GeometryDash extends Application {
 
     public void start(Stage stage) {
         Pane pane = new Pane();
-        pane.setStyle("-fx-background-color: linear-gradient(from 10% 10% to 100% 100%, #ff0000, #ffc400);");
+        pane.setStyle("-fx-background-color: linear-gradient(from 10% 10% to   100% 100%, #ff0000, #ffc400);");
 
         ground.setFill(Color.MEDIUMPURPLE);
         dude.relocate(dudeX, dudeY);
@@ -72,6 +73,7 @@ public class GeometryDash extends Application {
         obstacles.add(o2);
         obstacles.add(o3);
         obstacles.add(o4);
+        obstacles.add(o5);
         for(Shape s : obstacles) {
             pane.getChildren().add(s);
         }
@@ -106,7 +108,6 @@ public class GeometryDash extends Application {
                     }
                     else if(s instanceof Spike) {
                         obsBound = ((Spike) s).getBounds();
-                        break;
                     }
 
 //                    System.out.println(((Block)s).getBounds());
@@ -132,25 +133,26 @@ public class GeometryDash extends Application {
                         text.setFont(Font.font("Times New Roman", 60));
                         text.setWrappingWidth(500);
                         text.setFill(Color.DARKBLUE);
-                        text.setTranslateY(225);
-                        text.setTranslateX(65);
+                        text.setTranslateY(200);
+                        text.setTranslateX(110);
+                        pane.getChildren().add(text);
 
-                        //button to play again
-                        Button playAgain = new Button("Relive!");
-                        playAgain.setTextAlignment(TextAlignment.CENTER);
-                        playAgain.setFont(Font.font("Times New Roman", 15));
-                        playAgain.setTranslateY(40);
-                        playAgain.setTranslateX(550);
-                        playAgain.setOnMouseClicked(e -> {
+                        //rectangle that falls over the screen after death
+                        Rectangle r = new Rectangle(500, 500);
+                        r.setFill(Color.rgb(64, 64, 64, 0.4));
+                        r.widthProperty().bind(pane.widthProperty());
+                        r.heightProperty().bind(pane.heightProperty());
+                        pane.getChildren().add(r);
 
-                            pane.getChildren().removeAll(text, playAgain);
-                            start();
-                        }
-
-
-                    );
-                        pane.getChildren().addAll(text, playAgain);
-
+                        //restart button
+                        Image re = new Image("restart.png");
+                        ImageView res = new ImageView(re);
+                        res.setFitHeight(64);
+                        res.setFitWidth(64);
+                        res.setX(325);
+                        res.setY(250);
+                        pane.getChildren().add(res);
+                        res.setOnMousePressed(e -> pane.getChildren().remove(res));
 
                      }
                     else if (s.getLayoutX() + s.getLayoutBounds().getWidth() <= -750) {
