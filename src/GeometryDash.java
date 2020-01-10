@@ -14,6 +14,9 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -55,6 +58,8 @@ public class GeometryDash extends Application {
     // particle effect behind player to show movement (optional)
     private ArrayList<Circle> fart = new ArrayList<>(50);
 
+    public int pauseInt = 1;
+
 
     public void start(Stage stage) {
         Pane pane = new Pane();
@@ -62,7 +67,6 @@ public class GeometryDash extends Application {
 
         ground.setFill(Color.MEDIUMPURPLE);
         dude.relocate(dudeX, dudeY);
-        pane.getChildren().addAll(dude, ground);
 
         obstacles.add(o1);
         obstacles.add(o2);
@@ -121,6 +125,33 @@ public class GeometryDash extends Application {
                     else if (hits(dudeBound, obsBound)) {
                         // die
                         stop();
+
+                        //game over text
+                        Text text = new Text("Game Over!!");
+                        text.setTextAlignment(TextAlignment.CENTER);
+                        text.setFont(Font.font("Times New Roman", 60));
+                        text.setWrappingWidth(500);
+                        text.setFill(Color.DARKBLUE);
+                        text.setTranslateY(225);
+                        text.setTranslateX(65);
+
+                        //button to play again
+                        Button playAgain = new Button("Relive!");
+                        playAgain.setTextAlignment(TextAlignment.CENTER);
+                        playAgain.setFont(Font.font("Times New Roman", 15));
+                        playAgain.setTranslateY(40);
+                        playAgain.setTranslateX(550);
+                        playAgain.setOnMouseClicked(e -> {
+
+                            pane.getChildren().removeAll(text, playAgain);
+                            start();
+                        }
+
+
+                    );
+                        pane.getChildren().addAll(text, playAgain);
+
+
                      }
                     else if (s.getLayoutX() + s.getLayoutBounds().getWidth() <= -750) {
                         pane.getChildren().remove(s);
@@ -140,6 +171,26 @@ public class GeometryDash extends Application {
                     fall();
                 }
 
+//                Button pause = new Button("Pause");
+//                pause.setTextAlignment(TextAlignment.CENTER);
+//                pause.setFont(Font.font("Times New Roman", 15));
+//                pause.setTranslateY(40);
+//                pause.setTranslateX(100);
+//                pause.setOnMouseClicked(e -> {
+//
+//                    if (pauseInt % 2 == 0) {
+//                        pause.setText("Resume");
+//                        stop();
+//                        pauseInt++;
+//                    }
+//                    else {
+//                        pause.setText("Pause");
+//                        start();
+//                        pauseInt++;
+//                    }
+//                        });
+
+//                pane.getChildren().addAll(pause);
 
                 dude.relocate(dudeX, dudeY);
                 pane.requestFocus();
@@ -152,7 +203,7 @@ public class GeometryDash extends Application {
 //        });
 
 
-
+        pane.getChildren().addAll(dude, ground);
         Scene scene = new Scene(pane, width, height);
         stage.setScene(scene);
         stage.setTitle("Square Dude Dodging These Hoes");
