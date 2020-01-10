@@ -152,7 +152,9 @@ public class GeometryDash extends Application {
                         res.setX(325);
                         res.setY(250);
                         pane.getChildren().add(res);
-                        res.setOnMousePressed(e -> pane.getChildren().remove(res));
+                        res.setOnMousePressed(e -> start());
+
+
 
                      }
                     else if (s.getLayoutX() + s.getLayoutBounds().getWidth() <= -750) {
