@@ -78,7 +78,7 @@ public class GeometryDash extends Application {
             pane.getChildren().add(s);
         }
 
-        new AnimationTimer() {
+        AnimationTimer t = new AnimationTimer() {
             public void handle(long now){
                 //jumping
                 pane.setOnKeyPressed(e ->
@@ -175,31 +175,13 @@ public class GeometryDash extends Application {
                     fall();
                 }
 
-//                Button pause = new Button("Pause");
-//                pause.setTextAlignment(TextAlignment.CENTER);
-//                pause.setFont(Font.font("Times New Roman", 15));
-//                pause.setTranslateY(40);
-//                pause.setTranslateX(100);
-//                pause.setOnMouseClicked(e -> {
-//
-//                    if (pauseInt % 2 == 0) {
-//                        pause.setText("Resume");
-//                        stop();
-//                        pauseInt++;
-//                    }
-//                    else {
-//                        pause.setText("Pause");
-//                        start();
-//                        pauseInt++;
-//                    }
-//                        });
 
-//                pane.getChildren().addAll(pause);
 
                 dude.relocate(dudeX, dudeY);
                 pane.requestFocus();
             }
-        }.start();
+        };
+        t.start();
 
 //        pause.setOnAction(e -> {
 //
@@ -208,6 +190,27 @@ public class GeometryDash extends Application {
 
 
         pane.getChildren().addAll(dude, ground);
+        Image pause1 = new Image("pauseButton.png");
+        ImageView psbutton = new ImageView(pause1);
+        psbutton.setY(50);
+        psbutton.setX(600);
+        psbutton.setOnMouseClicked(e -> {
+            pauseInt++;
+
+            if (pauseInt % 2 == 0) {
+
+                psbutton.setImage(new Image("resume.png"));
+                t.stop();
+
+            }
+            else {
+                psbutton.setImage(new Image("pauseButton.png"));
+                t.start();
+            }
+        });
+
+        pane.getChildren().addAll(psbutton);
+
         Scene scene = new Scene(pane, width, height);
         stage.setScene(scene);
         stage.setTitle("Square Dude Dodging These Hoes");
@@ -228,7 +231,7 @@ public class GeometryDash extends Application {
     }
     private void fall() {
         if(height-100 > dudeY) {
-            dudeY+=5;
+                dudeY+=5;
         }
         else{
             jump = false;
