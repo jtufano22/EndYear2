@@ -192,6 +192,8 @@ public class GeometryDash extends Application {
         pane.getChildren().addAll(dude, ground);
         Image pause1 = new Image("pauseButton.png");
         ImageView psbutton = new ImageView(pause1);
+        psbutton.setFitHeight(100);
+        psbutton.setFitWidth(100);
         psbutton.setY(50);
         psbutton.setX(600);
         psbutton.setOnMouseClicked(e -> {
@@ -213,7 +215,7 @@ public class GeometryDash extends Application {
 
         Scene scene = new Scene(pane, width, height);
         stage.setScene(scene);
-        stage.setTitle("Square Dude Dodging These Hoes");
+        stage.setTitle("Square Dude Dodging These Rectanghoes");
         stage.getIcons().add(new Image("squareDude.png"));
         stage.setResizable(false);
         stage.show();
