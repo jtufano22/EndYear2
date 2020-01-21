@@ -20,6 +20,7 @@ import javafx.util.Duration;
 import java.util.ArrayList;
 
 public class GeometryDash extends Application {
+    private boolean supported = false;
 
     private Button pause;
     // player
@@ -47,9 +48,10 @@ public class GeometryDash extends Application {
 
     // all obstacles must be instantiated here
     private int obstaclesPast = 0;
-    private ArrayList<Shape> obstacles = new ArrayList<>(100);
+    private ArrayList<Rectangle> obstacles = new ArrayList<>(100);
     private Block o1 = new Block(width, height -118, 100, 50);
-    private Block o2 = new Block(width+500, height -118, 100, 50);
+    //private Block o2 = new Block(width+500, height -118, 100, 50);
+    private Spike o3 = new Spike(width + 500, height -118, 50, 50);
 
     // particle effect behind player to show movement (optional)
     private ArrayList<Circle> fart = new ArrayList<>(50);
@@ -59,11 +61,11 @@ public class GeometryDash extends Application {
         pane.setStyle("-fx-background-color: linear-gradient(from 10% 10% to 100% 100%, #ff0000, #ffc400);");
 
         ground.setFill(Color.MEDIUMPURPLE);
-        dude.relocate(dudeX, dudeY);
         pane.getChildren().addAll(dude, ground);
 
         obstacles.add(o1);
-        obstacles.add(o2);
+        //obstacles.add(o2);
+        obstacles.add(o3);
         for(Shape s : obstacles) {
             pane.getChildren().add(s);
         }
@@ -92,20 +94,18 @@ public class GeometryDash extends Application {
 
                 // everything to do with obstacles goes here
                 for(int i = obstaclesPast; i < obstacles.size(); i++) {
-                    Shape s = obstacles.get(i);
+                    Rectangle s = obstacles.get(i);
                     if(s instanceof Block) {
                         obsBound = ((Block) s).getBounds();
                     }
                     else if(s instanceof Spike) {
                         obsBound = ((Spike) s).getBounds();
-                        break;
                     }
 
-                    System.out.println(((Block)s).getBounds());
                     if(s instanceof Block &&
                             dudeY + 32 == ((Block) s).getY() &&
-                            ((Block)s).getX() < dudeX + 32 &&
-                            ((Block)s).getX() + ((Block) s).getWidth() > dudeX + 32 &&
+                            s.getX() < dudeX + 32 &&
+                            s.getX() + s.getWidth() > dudeX + 32 &&
                             !up) {
                         // stay on it
                         dudeY = (int)(((Block) s).getY()) - 32;
@@ -118,24 +118,18 @@ public class GeometryDash extends Application {
                         // die
                         stop();
                      }
-                    else if (s.getLayoutX() + s.getLayoutBounds().getWidth() <= -750) {
+                    else if (s.getX() + s.getWidth() <= 0) {
                         pane.getChildren().remove(s);
                         obstaclesPast++;
                         obstacles.set(i, null);
                     }
 
-                    if(s instanceof Spike) {
-                        s.setLayoutX(s.getLayoutX() - 5);
-                    }
-                    else if(s instanceof Block) {
-                        ((Block)s).setX(((Block) s).getX()-5);
-                    }
+                    s.setX(s.getX() - 5);
                 }
 
                 if (!supported && !jump) {
                     fall();
                 }
-
 
                 dude.relocate(dudeX, dudeY);
                 pane.requestFocus();
@@ -146,8 +140,6 @@ public class GeometryDash extends Application {
 //
 //            if (stop();
 //        });
-
-
 
         Scene scene = new Scene(pane, width, height);
         stage.setScene(scene);
@@ -179,6 +171,6 @@ public class GeometryDash extends Application {
 
     // collision
     private boolean hits(Rectangle2D o1, Rectangle2D o2) {
-        return (o1.getMaxX() == o2.getMinX()) && (o1.getMaxY() >= o2.getMinY());
+        return (o1.getMaxX() == o2.getMinX() && o1.getMaxY() >= o2.getMinY());
     }
 }

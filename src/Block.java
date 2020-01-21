@@ -10,6 +10,6 @@ public class Block extends Rectangle {
     }
 
     public Rectangle2D getBounds() {
-        return new Rectangle2D(this.getX(), this.getY(), this.getWidth(), this.getHeight());
+        return new Rectangle2D(this.getX()-5, this.getY(), this.getWidth(), this.getHeight());
     }
 }
