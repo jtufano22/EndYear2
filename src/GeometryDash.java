@@ -14,6 +14,9 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -50,27 +53,34 @@ public class GeometryDash extends Application {
     private int obstaclesPast = 0;
     private ArrayList<Rectangle> obstacles = new ArrayList<>(100);
     private Block o1 = new Block(width, height -118, 100, 50);
-    //private Block o2 = new Block(width+500, height -118, 100, 50);
-    private Spike o3 = new Spike(width + 500, height -118, 50, 50);
-
+    private Block o2 = new Block(width+500, height -118, 100, 50);
+    private Block o3 = new Block(width +250, height -150, 100, 50);
+    private Block o4 = new Block(width +250, height -118, 100, 50);
+//    private Spike o5 = new Spike(width-50, height-68,  50, 50);
     // particle effect behind player to show movement (optional)
     private ArrayList<Circle> fart = new ArrayList<>(50);
 
+    public int pauseInt = 1;
+
+
     public void start(Stage stage) {
         Pane pane = new Pane();
-        pane.setStyle("-fx-background-color: linear-gradient(from 10% 10% to 100% 100%, #ff0000, #ffc400);");
+        pane.setStyle("-fx-background-color: linear-gradient(from 10% 10% to   100% 100%, #ff0000, #ffc400);");
 
         ground.setFill(Color.MEDIUMPURPLE);
+        dude.relocate(dudeX, dudeY);
         pane.getChildren().addAll(dude, ground);
 
         obstacles.add(o1);
-        //obstacles.add(o2);
+        obstacles.add(o2);
         obstacles.add(o3);
+        obstacles.add(o4);
+//        obstacles.add(o5);
         for(Shape s : obstacles) {
             pane.getChildren().add(s);
         }
 
-        new AnimationTimer() {
+        AnimationTimer t = new AnimationTimer() {
             public void handle(long now){
                 //jumping
                 pane.setOnKeyPressed(e ->
@@ -102,7 +112,11 @@ public class GeometryDash extends Application {
                         obsBound = ((Spike) s).getBounds();
                     }
 
+//                    System.out.println(((Block)s).getBounds());
                     if(s instanceof Block &&
+                            dudeY + 32 > ((Block) s).getY() &&
+                            ((Block)s).getX() < dudeX + 32 &&
+                            ((Block)s).getX() + ((Block) s).getWidth() > dudeX + 32 &&
                             dudeY + 32 == ((Block) s).getY() &&
                             s.getX() < dudeX + 32 &&
                             s.getX() + s.getWidth() > dudeX + 32 &&
@@ -117,6 +131,36 @@ public class GeometryDash extends Application {
                     else if (hits(dudeBound, obsBound)) {
                         // die
                         stop();
+
+                        //game over text
+                        Text text = new Text("Game Over!!");
+                        text.setTextAlignment(TextAlignment.CENTER);
+                        text.setFont(Font.font("Times New Roman", 60));
+                        text.setWrappingWidth(500);
+                        text.setFill(Color.DARKBLUE);
+                        text.setTranslateY(200);
+                        text.setTranslateX(110);
+                        pane.getChildren().add(text);
+
+                        //rectangle that falls over the screen after death
+                        Rectangle r = new Rectangle(500, 500);
+                        r.setFill(Color.rgb(64, 64, 64, 0.4));
+                        r.widthProperty().bind(pane.widthProperty());
+                        r.heightProperty().bind(pane.heightProperty());
+                        pane.getChildren().add(r);
+
+                        //restart button
+                        Image re = new Image("restart.png");
+                        ImageView res = new ImageView(re);
+                        res.setFitHeight(64);
+                        res.setFitWidth(64);
+                        res.setX(325);
+                        res.setY(250);
+                        pane.getChildren().add(res);
+                        res.setOnMousePressed(e -> start());
+
+
+
                      }
                     else if (s.getX() + s.getWidth() <= 0) {
                         pane.getChildren().remove(s);
@@ -131,19 +175,46 @@ public class GeometryDash extends Application {
                     fall();
                 }
 
+
                 dude.relocate(dudeX, dudeY);
                 pane.requestFocus();
             }
-        }.start();
+        };
+        t.start();
 
 //        pause.setOnAction(e -> {
 //
 //            if (stop();
 //        });
 
+
+        pane.getChildren().addAll(dude, ground);
+        Image pause1 = new Image("pauseButton.png");
+        ImageView psbutton = new ImageView(pause1);
+        psbutton.setFitHeight(100);
+        psbutton.setFitWidth(100);
+        psbutton.setY(50);
+        psbutton.setX(600);
+        psbutton.setOnMouseClicked(e -> {
+            pauseInt++;
+
+            if (pauseInt % 2 == 0) {
+
+                psbutton.setImage(new Image("resume.png"));
+                t.stop();
+
+            }
+            else {
+                psbutton.setImage(new Image("pauseButton.png"));
+                t.start();
+            }
+        });
+
+        pane.getChildren().addAll(psbutton);
+
         Scene scene = new Scene(pane, width, height);
         stage.setScene(scene);
-        stage.setTitle("Square Dude Dodging These Hoes");
+        stage.setTitle("Square Dude Dodging These Rectanghoes");
         stage.getIcons().add(new Image("squareDude.png"));
         stage.setResizable(false);
         stage.show();
@@ -161,7 +232,7 @@ public class GeometryDash extends Application {
     }
     private void fall() {
         if(height-100 > dudeY) {
-            dudeY+=5;
+                dudeY+=5;
         }
         else{
             jump = false;
