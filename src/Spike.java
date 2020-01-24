@@ -4,10 +4,12 @@ import javafx.scene.shape.Rectangle;
 
 public class Spike extends Rectangle {
     private int startX;
+    public boolean onScreen;
 
-    public Spike(int x, int y, int width, int height) {
+    public Spike(int x, int y, int width, int height, boolean oS) {
         super(x, y, width, height);
-        setFill(Color.BEIGE);
+        onScreen = oS;
+        setFill(Color.RED);
         startX = x;
     }
 
