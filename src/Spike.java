@@ -9,7 +9,7 @@ public class Spike extends Rectangle {
     public Spike(int x, int y, int width, int height, boolean oS) {
         super(x, y, width, height);
         onScreen = oS;
-        setFill(Color.RED);
+        setFill(Color.DARKRED);
         startX = x;
     }
 

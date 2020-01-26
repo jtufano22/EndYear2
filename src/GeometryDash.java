@@ -1,5 +1,4 @@
 import javafx.animation.AnimationTimer;
-import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
@@ -9,17 +8,17 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 
 import javafx.scene.layout.Pane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.Shape;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class GeometryDash extends Application {
@@ -52,11 +51,15 @@ public class GeometryDash extends Application {
     // all obstacles must be instantiated here
     private ArrayList<Rectangle> obstacles = new ArrayList<>(100);
     private Block o1 = new Block(width, height -118, 100, 50, false);
-    private Block o2 = new Block(width+500, height -118, 100, 50, false);
+    private Block o2 = new Block(width +500, height -118, 100, 50, false);
     private Block o3 = new Block(width +250, height -150, 100, 50, false);
     private Block o4 = new Block(width +250, height -118, 100, 50, false);
-    private Block o5 = new Block(width +700, height -118, 500, 50, false);
-    private Block o6 = new Block(width +805, height -150, 410,50 , false);
+    private Block o5 = new Block(width +700, height -118, 510, 50, false);
+    private Block o6 = new Block(width +805, height -150, 415,50 , false);
+    private Spike o7 = new Spike(width +1400, height-108, 40, 40, false);
+    private Block o8 = new Block(width +1600, height-118, 200, 50, false);
+    private Block o9 = new Block(width +1600, height-318, 200, 50, false);
+    private Spike o10 = new Spike(width +1750, height -138, 50, 20, false);
 
     //    private Spike o5 = new Spike(width-50, height-68,  50, 50);
     // particle effect behind player to show movement (optional)
@@ -64,8 +67,7 @@ public class GeometryDash extends Application {
 
     public int pauseInt = 1;
 
-
-    public void start(Stage stage) {
+    public void start(Stage stage){
         Pane pane = new Pane();
         pane.setStyle("-fx-background-color: linear-gradient(from 10% 10% to   100% 100%, #ff0000, #ffc400);");
 
@@ -79,9 +81,14 @@ public class GeometryDash extends Application {
         obstacles.add(o4);
         obstacles.add(o5);
         obstacles.add(o6);
+        obstacles.add(o7);
+        obstacles.add(o8);
+        obstacles.add(o9);
+        obstacles.add(o10);
 //        for(Shape s : obstacles) {
 //            pane.getChildren().add(s);
 //            }
+
 
         AnimationTimer t = new AnimationTimer() {
             public void handle(long now){
@@ -125,6 +132,7 @@ public class GeometryDash extends Application {
 
                     if(s instanceof Block &&
                             dudeY + 32 >= s.getY() &&
+                            dudeY < s.getY() &&
                             s.getX() < dudeX + 32 &&
                             s.getX() + s.getWidth() > dudeX &&
                             !up) {
@@ -147,14 +155,18 @@ public class GeometryDash extends Application {
                         text.setFill(Color.DARKBLUE);
                         text.setTranslateY(200);
                         text.setTranslateX(110);
+                        pane.getChildren().removeAll(pane.getChildren());
                         pane.getChildren().add(text);
 
+                        //game over sound
+                        getHostServices().showDocument("https://www.youtube.com/watch?v=hlnpkrJs6wM&t=0s");
+
                         //rectangle that falls over the screen after death
-                        Rectangle r = new Rectangle(500, 500);
-                        r.setFill(Color.rgb(64, 64, 64, 0.4));
-                        r.widthProperty().bind(pane.widthProperty());
-                        r.heightProperty().bind(pane.heightProperty());
-                        pane.getChildren().add(r);
+//                        Rectangle r = new Rectangle(500, 500);
+//                        r.setFill(Color.rgb(64, 64, 64, 0.4));
+//                        r.widthProperty().bind(pane.widthProperty());
+//                        r.heightProperty().bind(pane.heightProperty());
+//                        pane.getChildren().add(r);
 
                         //restart button
 //                        Image re = new Image("restart.png");
@@ -181,6 +193,30 @@ public class GeometryDash extends Application {
                     fall();
                 }
 
+                if(obstacles.isEmpty()) {
+                    stop();
+
+                    // win text
+                    Text win = new Text("You Win!");
+                    win.setTextAlignment(TextAlignment.CENTER);
+                    win.setFont(Font.font("Times New Roman", 60));
+                    win.setWrappingWidth(500);
+                    win.setFill(Color.DARKBLUE);
+                    win.setTranslateY(200);
+                    win.setTranslateX(110);
+                    pane.getChildren().removeAll(pane.getChildren());
+                    pane.getChildren().add(win);
+
+                    //win sound
+                    String musicFile = "MonstersInc2.mp3";
+
+                    Media sound = new Media(new File(musicFile).toURI().toString());
+                    MediaPlayer mediaPlayer = new MediaPlayer(sound);
+                    mediaPlayer.setVolume(1.0);
+                    mediaPlayer.setAutoPlay(true);
+                    mediaPlayer.play();
+                }
+
                 dude.relocate(dudeX, dudeY);
                 pane.requestFocus();
             }
@@ -195,7 +231,6 @@ public class GeometryDash extends Application {
         psbutton.setX(600);
         psbutton.setOnMouseClicked(e -> {
             pauseInt++;
-            System.out.println(pauseInt);
             if (pauseInt % 2 == 0) {
 
                 psbutton.setImage(new Image("resume.png"));
