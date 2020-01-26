@@ -50,7 +50,6 @@ public class GeometryDash extends Application {
     private Rectangle ground = new Rectangle(0, height-68, width+28, 78);
 
     // all obstacles must be instantiated here
-    private int obstaclesPast = 0;
     private ArrayList<Rectangle> obstacles = new ArrayList<>(100);
     private Block o1 = new Block(width, height -118, 100, 50, false);
     private Block o2 = new Block(width+500, height -118, 100, 50, false);
@@ -58,7 +57,8 @@ public class GeometryDash extends Application {
     private Block o4 = new Block(width +250, height -118, 100, 50, false);
     private Block o5 = new Block(width +700, height -118, 500, 50, false);
     private Block o6 = new Block(width +805, height -150, 410,50 , false);
-//    private Spike o5 = new Spike(width-50, height-68,  50, 50);
+
+    //    private Spike o5 = new Spike(width-50, height-68,  50, 50);
     // particle effect behind player to show movement (optional)
     private ArrayList<Circle> fart = new ArrayList<>(50);
 
@@ -79,10 +79,9 @@ public class GeometryDash extends Application {
         obstacles.add(o4);
         obstacles.add(o5);
         obstacles.add(o6);
-//        obstacles.add(o5);
 //        for(Shape s : obstacles) {
 //            pane.getChildren().add(s);
-//        }
+//            }
 
         AnimationTimer t = new AnimationTimer() {
             public void handle(long now){
@@ -118,10 +117,10 @@ public class GeometryDash extends Application {
                     }
                     else if(s instanceof Spike) {
                         obsBound = ((Spike) s).getBounds();
-//                        if(s.getX() < 750 && !((Spike)s).onScreen) {
-//                            pane.getChildren().add(s);
-//                            ((Spike) s).onScreen = true;
-//                        }
+                        if(s.getX() < 750 && !((Spike)s).onScreen) {
+                            pane.getChildren().add(s);
+                            ((Spike) s).onScreen = true;
+                        }
                     }
 
                     if(s instanceof Block &&
@@ -169,10 +168,9 @@ public class GeometryDash extends Application {
 
 
 
-                     }
+                    }
                     else if (s.getX() + s.getWidth() <= 0) {
                         pane.getChildren().remove(s);
-                        obstaclesPast++;
                         obstacles.remove(i);
                     }
 
@@ -188,12 +186,6 @@ public class GeometryDash extends Application {
             }
         };
         t.start();
-
-//        pause.setOnAction(e -> {
-//
-//            if (stop();
-//        });
-
 
         Image pause1 = new Image("pauseButton.png");
         ImageView psbutton = new ImageView(pause1);
@@ -228,8 +220,8 @@ public class GeometryDash extends Application {
 
     // jumping and falling
     private void jump() {
-        if(startingPos-100 < dudeY) {
-            dudeY-=5;
+        if(startingPos-102 < dudeY) {
+            dudeY-=6;
         }
         else{
             up = false;
@@ -237,18 +229,19 @@ public class GeometryDash extends Application {
         dudeBound = new Rectangle2D(dudeX, dudeY, 32, 32);
     }
     private void fall() {
+        if(dudeY + 6 >= height - 100) {
+            dudeY = height - 100;
+        }
         if(height-100 > dudeY) {
-                dudeY+=5;
+            dudeY+=6;
         }
         else{
             jump = false;
         }
         dudeBound = new Rectangle2D(dudeX, dudeY, 32, 32);
     }
-
     // collision
     private boolean hits(Rectangle2D o1, Rectangle2D o2) {
-        //return (o1.getMaxX() == o2.getMinX() && o1.getMaxY() >= o2.getMinY());
         return o1.intersects(o2);
     }
 }
