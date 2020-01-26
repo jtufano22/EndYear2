@@ -56,6 +56,8 @@ public class GeometryDash extends Application {
     private Block o2 = new Block(width+500, height -118, 100, 50, false);
     private Block o3 = new Block(width +250, height -150, 100, 50, false);
     private Block o4 = new Block(width +250, height -118, 100, 50, false);
+    private Block o5 = new Block(width +700, height -118, 500, 50, false);
+    private Block o6 = new Block(width +800, height -150, 410,50 , false);
 //    private Spike o5 = new Spike(width-50, height-68,  50, 50);
     // particle effect behind player to show movement (optional)
     private ArrayList<Circle> fart = new ArrayList<>(50);
@@ -75,6 +77,8 @@ public class GeometryDash extends Application {
         obstacles.add(o2);
         obstacles.add(o3);
         obstacles.add(o4);
+        obstacles.add(o5);
+        obstacles.add(o6);
 //        obstacles.add(o5);
 //        for(Shape s : obstacles) {
 //            pane.getChildren().add(s);
