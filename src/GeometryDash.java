@@ -58,12 +58,18 @@ public class GeometryDash extends Application {
     private Block o6 = new Block(width +805, height -150, 415,50 , false);
     private Spike o7 = new Spike(width +1400, height-108, 40, 40, false);
     private Block o8 = new Block(width +1600, height-118, 200, 50, false);
-    private Block o9 = new Block(width +1600, height-318, 200, 50, false);
+    private Block o9 = new Block(width +1600, height-818, 200, 500, false);
     private Spike o10 = new Spike(width +1750, height -138, 50, 20, false);
+    private Block o11 = new Block(width +1800, height-868, 200, 400, false);
+    private Block o12 = new Block(width +1800, height-188, 200, 120, false);
+    private Block o13 = new Block(width +2000, height-868, 200, 400, false);
+    private Block o14 = new Block(width +2000, height-238, 200, 170, false);
+    private Block o15 = new Block(width +2200, height-288, 200, 220, false);
+    private Block o16 = new Block(width +2200, height-868, 200, 400, false);
+    private Spike o17 = new Spike(width +2300, height-288, 100, 220, false);
+    private Spike o18 = new Spike(width +2620, height-868, 100, 750, false);
+    private Block o19 = new Block(width +2400, height-868, 220, 400, false);
 
-    //    private Spike o5 = new Spike(width-50, height-68,  50, 50);
-    // particle effect behind player to show movement (optional)
-    private ArrayList<Circle> fart = new ArrayList<>(50);
 
     public int pauseInt = 1;
 
@@ -85,9 +91,15 @@ public class GeometryDash extends Application {
         obstacles.add(o8);
         obstacles.add(o9);
         obstacles.add(o10);
-//        for(Shape s : obstacles) {
-//            pane.getChildren().add(s);
-//            }
+        obstacles.add(o11);
+        obstacles.add(o12);
+        obstacles.add(o13);
+        obstacles.add(o14);
+        obstacles.add(o15);
+        obstacles.add(o16);
+        obstacles.add(o17);
+        obstacles.add(o18);
+        obstacles.add(o19);
 
 
         AnimationTimer t = new AnimationTimer() {
@@ -161,25 +173,6 @@ public class GeometryDash extends Application {
                         //game over sound
                         getHostServices().showDocument("https://www.youtube.com/watch?v=hlnpkrJs6wM&t=0s");
 
-                        //rectangle that falls over the screen after death
-//                        Rectangle r = new Rectangle(500, 500);
-//                        r.setFill(Color.rgb(64, 64, 64, 0.4));
-//                        r.widthProperty().bind(pane.widthProperty());
-//                        r.heightProperty().bind(pane.heightProperty());
-//                        pane.getChildren().add(r);
-
-                        //restart button
-//                        Image re = new Image("restart.png");
-//                        ImageView res = new ImageView(re);
-//                        res.setFitHeight(64);
-//                        res.setFitWidth(64);
-//                        res.setX(325);
-//                        res.setY(250);
-//                        pane.getChildren().add(res);
-//                        res.setOnMousePressed(e -> start());
-
-
-
                     }
                     else if (s.getX() + s.getWidth() <= 0) {
                         pane.getChildren().remove(s);
@@ -229,7 +222,11 @@ public class GeometryDash extends Application {
         psbutton.setFitWidth(100);
         psbutton.setY(50);
         psbutton.setX(600);
-        psbutton.setOnMouseClicked(e -> {
+        Circle pauseCircle = new Circle(50);
+        pauseCircle.setCenterX(650);
+        pauseCircle.setCenterY(100);
+        pauseCircle.setFill(Color.TRANSPARENT);
+        pauseCircle.setOnMouseClicked(e -> {
             pauseInt++;
             if (pauseInt % 2 == 0) {
 
@@ -243,7 +240,7 @@ public class GeometryDash extends Application {
             }
         });
 
-        pane.getChildren().addAll(psbutton);
+        pane.getChildren().addAll(psbutton, pauseCircle);
 
         Scene scene = new Scene(pane, width, height);
         stage.setScene(scene);
