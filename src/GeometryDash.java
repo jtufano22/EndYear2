@@ -21,8 +21,6 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.util.ArrayList;
 
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class GeometryDash extends Application {
     private boolean supported = false;
@@ -86,25 +84,7 @@ public class GeometryDash extends Application {
         dude.relocate(dudeX, dudeY);
         pane.getChildren().addAll(dude, ground);
 
-        obstacles.add(o1);
-        obstacles.add(o2);
-        obstacles.add(o3);
-        obstacles.add(o4);
-        obstacles.add(o5);
-        obstacles.add(o6);
-        obstacles.add(o7);
-        obstacles.add(o8);
-        obstacles.add(o9);
-        obstacles.add(o10);
-        obstacles.add(o11);
-        obstacles.add(o12);
-        obstacles.add(o13);
-        obstacles.add(o14);
-        obstacles.add(o15);
-        obstacles.add(o16);
-        obstacles.add(o17);
-        obstacles.add(o18);
-        obstacles.add(o19);
+        makeLevel();
 
 
         AnimationTimer t = new AnimationTimer() {
@@ -178,14 +158,7 @@ public class GeometryDash extends Application {
                         }
                     });
 
-                    Timer myTimer = new Timer();
-                    myTimer.schedule(new TimerTask(){
 
-                        @Override
-                        public void run() {
-                            jump = false;
-                        }
-                    }, 10000);
                     if (!supported && !jump) {
                         fall();
                     }
@@ -305,6 +278,8 @@ public class GeometryDash extends Application {
             }
             else {
                 psbutton.setImage(new Image("pauseButton.png"));
+                removeLevel();
+                makeLevel();
                 t.start();
             }
         });
@@ -347,5 +322,55 @@ public class GeometryDash extends Application {
     // collision
     private boolean hits(Rectangle2D o1, Rectangle2D o2) {
         return o1.intersects(o2);
+    }
+
+    private void makeLevel() {
+        obstacles.add(o1);
+        obstacles.add(o2);
+        obstacles.add(o3);
+        obstacles.add(o4);
+        obstacles.add(o5);
+        obstacles.add(o6);
+        obstacles.add(o7);
+        obstacles.add(o8);
+        obstacles.add(o9);
+        obstacles.add(o10);
+        obstacles.add(o11);
+        obstacles.add(o12);
+        obstacles.add(o13);
+        obstacles.add(o14);
+        obstacles.add(o15);
+        obstacles.add(o16);
+        obstacles.add(o17);
+        obstacles.add(o18);
+        obstacles.add(o19);
+    }
+    private void removeLevel() {
+        obstacles.remove(o1);
+        obstacles.remove(o2);
+        obstacles.remove(o3);
+        obstacles.remove(o4);
+        obstacles.remove(o5);
+        obstacles.remove(o6);
+        obstacles.remove(o7);
+        obstacles.remove(o8);
+        obstacles.remove(o9);
+        obstacles.remove(o10);
+        obstacles.remove(o11);
+        obstacles.remove(o12);
+        obstacles.remove(o13);
+        obstacles.remove(o14);
+        obstacles.remove(o15);
+        obstacles.remove(o16);
+        obstacles.remove(o17);
+        obstacles.remove(o18);
+        obstacles.remove(o19);
+
+        dudeX = 63;
+        dudeY = height - 100;
+        dudeBound = new Rectangle2D(dudeX, dudeY, 32, 32);
+        jump = false;
+        up = false;
+        startingPos = 0;
     }
 }
