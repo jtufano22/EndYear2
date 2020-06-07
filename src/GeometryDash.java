@@ -21,12 +21,17 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.util.ArrayList;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 public class GeometryDash extends Application {
     private boolean supported = false;
+    private String type = "spaceship";
 
     private Button pause;
     // player
-    private ImageView dude = new ImageView("squareDude.png");
+
+    private ImageView dude;
 
     // dimensions of scene
     private int height = 500;
@@ -105,23 +110,89 @@ public class GeometryDash extends Application {
         AnimationTimer t = new AnimationTimer() {
             public void handle(long now){
                 //jumping
-                pane.setOnKeyPressed(e ->
-                {
-                    KeyCode key = e.getCode();
-                    if((key.equals(KeyCode.W) || key.equals(KeyCode.UP) || key.equals(KeyCode.SPACE)) && !jump) {
-                        jump = true;
-                        up = true;
-                        startingPos = dudeY;
-                    }
-                });
 
-                if(jump) {
-                    if (up) {
-                        jump();
-                    } else {
+
+
+                if (type.equals("regular")) {
+                    pane.setOnKeyPressed(e ->
+                    {
+                        Image a = new Image("squareDude.png");
+                        dude.setImage(a);
+                        KeyCode key = e.getCode();
+                        if((key.equals(KeyCode.W) || key.equals(KeyCode.UP) || key.equals(KeyCode.SPACE)) && !jump) {
+                            jump = true;
+                            up = true;
+                            startingPos = dudeY;
+                        }
+                    });
+
+                    if (jump) {
+                        if (up) {
+                            jump();
+                        } else {
+                            fall();
+                        }
+                    }
+                    if (!supported && !jump) {
                         fall();
                     }
                 }
+
+                else if (type.equals("ufo")) {
+                    Image a = new Image("ufo.png");
+                    dude.setImage(a);
+
+                    pane.setOnKeyPressed(e ->
+                    {
+                        KeyCode key = e.getCode();
+                        if((key.equals(KeyCode.W) || key.equals(KeyCode.UP) || key.equals(KeyCode.SPACE)) ) {
+                            jump = true;
+                            up = true;
+                            startingPos = dudeY;
+                        }
+                    });
+                    if (jump) {
+                        if (up) {
+                            jump();
+                        }
+                        else {
+                            fall();
+                        }
+                    }
+                    if (!supported && !jump) {
+                        fall();
+                    }
+                }
+
+                else if (type.equals("spaceship")) {
+                    Image a = new Image("ufo.png");
+                    dude.setImage(a);
+
+                    pane.setOnKeyPressed(e ->
+                    {
+                        KeyCode key = e.getCode();
+                        if((key.equals(KeyCode.W) || key.equals(KeyCode.UP) || key.equals(KeyCode.SPACE)) ) {
+                            dudeY -= 10;
+                            jump = true;
+                            startingPos = dudeY;
+                        }
+                    });
+
+                    Timer myTimer = new Timer();
+                    myTimer.schedule(new TimerTask(){
+
+                        @Override
+                        public void run() {
+                            jump = false;
+                        }
+                    }, 10000);
+                    if (!supported && !jump) {
+                        fall();
+                    }
+                }
+
+
+
 
                 supported = false;
                 // everything to do with obstacles goes here
@@ -182,9 +253,7 @@ public class GeometryDash extends Application {
                     s.setX(s.getX() - 5);
                 }
 
-                if (!supported && !jump) {
-                    fall();
-                }
+
 
                 if(obstacles.isEmpty()) {
                     stop();
@@ -205,7 +274,7 @@ public class GeometryDash extends Application {
 
                     Media sound = new Media(new File(musicFile).toURI().toString());
                     MediaPlayer mediaPlayer = new MediaPlayer(sound);
-                    mediaPlayer.setVolume(1.0);
+                    mediaPlayer.setVolume(10.0);
                     mediaPlayer.setAutoPlay(true);
                     mediaPlayer.play();
                 }
@@ -260,6 +329,9 @@ public class GeometryDash extends Application {
         }
         dudeBound = new Rectangle2D(dudeX, dudeY, 32, 32);
     }
+
+
+
     private void fall() {
         if(dudeY + 6 >= height - 100) {
             dudeY = height - 100;
