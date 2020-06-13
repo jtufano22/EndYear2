@@ -86,7 +86,6 @@ public class GeometryDash extends Application {
 
         makeLevel();
 
-
         AnimationTimer t = new AnimationTimer() {
             public void handle(long now){
                 //jumping
