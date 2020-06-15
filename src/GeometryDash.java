@@ -344,6 +344,7 @@ public class GeometryDash extends Application {
         obstacles.add(o18);
         obstacles.add(o19);
     }
+
     private void removeLevel() {
         obstacles.remove(o1);
         obstacles.remove(o2);
