@@ -106,6 +106,34 @@
               "ycord": -368,
               "width": 220,
               "height": 400
+            },
+            {
+              "name": "s1",
+              "xcord": 2150,
+              "ycord": 392,
+              "width": 40,
+              "height": 40
+            },
+            {
+              "name": "s2",
+              "xcord": 2500,
+              "ycord": 362,
+              "width": 50,
+              "height": 20
+            },
+            {
+              "name": "s3",
+              "xcord": 3050,
+              "ycord": 212,
+              "width": 100,
+              "height": 220
+            },
+            {
+              "name": "s4",
+              "xcord": 3370,
+              "ycord": -368,
+              "width": 100,
+              "height": 750
             }
 
 
